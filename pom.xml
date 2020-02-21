@@ -11,11 +11,14 @@
         <maven.compiler.target>13</maven.compiler.target>
 	</properties>
   <dependencies>
-   <dependency>
-    <groupId>org.apache.commons</groupId>
-    <artifactId>commons-math3</artifactId>
-    <version>3.6.1</version>
+  <!-- https://mvnrepository.com/artifact/junit/junit -->
+<dependency>
+    <groupId>junit</groupId>
+    <artifactId>junit</artifactId>
+    <version>4.12</version>
+    <scope>test</scope>
 </dependency>
+  
   </dependencies>
  
 </project>
