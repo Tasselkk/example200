@@ -124,6 +124,18 @@ public class MainFrame extends JFrame {
 		panel.add(cb_city);
 		panel.add(lb_city);
 
+		lb_address=new JLabel("详细地址:");
+		lb_address.setBounds(36,220, 65, 18);
+		
+		tf_address = new JTextField();// 地址输入框
+		tf_address.setBounds(113, 215, 360, 25);
+		
+		lb_Email=new JLabel("  E-mail:");
+		lb_Email.setBounds(36,260, 65, 18);
+		
+		tf_Email = new JTextField(50);// E-mail输入框
+		tf_Email.setBounds(113, 255, 360, 25);
+		
 		bt_save = new JButton("保存");
 		bt_save.setBounds(159, 289, 75, 28);
 		bt_save.addActionListener(new ActionListener() {
@@ -141,7 +153,7 @@ public class MainFrame extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				// TODO 自动生成的方法存根
 				ButtonReset();
-				JOptionPane.showMessageDialog(null, "信息已重置！");
+				JOptionPane.showMessageDialog(null, "信息已重置！请重新填写");
 			}
 		});
 
@@ -150,6 +162,10 @@ public class MainFrame extends JFrame {
 		c.add(tf_name);
 		c.add(cb_sex);
 		c.add(panel);
+		c.add(lb_address);
+		c.add(tf_address);
+		c.add(lb_Email);
+		c.add(tf_Email);
 		c.add(bt_save);
 		c.add(bt_reset);
 		setVisible(true);
