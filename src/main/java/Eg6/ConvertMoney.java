@@ -1,117 +1,153 @@
-/**
- * 
- */
 package Eg6;
 
 import java.text.DecimalFormat;
 import java.util.Scanner;
 
+import javax.swing.JOptionPane;
+
 /**
- * @author kw
- *
+ * 金额转换
+ * 
+ * @author YongQiang Lee
  */
 public class ConvertMoney {
-
-	/**
-	 * @param args
-	 */
-	StringBuffer sb = new StringBuffer();
-	private final String[] convert_num = { "零", "壹", "贰", "叁", "肆", "伍", "陆", "柒", "捌", "玖" };
-	private final String[] convert_unit2 = { "角", "分", "厘" };
-	private final String[] convert_unit1 = { "", "拾", "佰", "仟", "万", "拾", "佰", "仟", "亿" };
-
-	private String Convert(double num) {
-		DecimalFormat df = new DecimalFormat("#0.###");
-		String num_s = df.format(num);
-		if (num_s.indexOf(".") == -1) {// 金额为整数
-			num_s = getInteger(num_s);
-			num_s = num_s.replaceAll("零亿", "零");
-			num_s = num_s.replaceAll("零仟万", "零");
-			num_s = num_s.replaceAll("零佰万", "零");
-			num_s = num_s.replaceAll("零拾万", "零");
-			num_s = num_s.replaceAll("零万", "零");
-			num_s = num_s.replaceAll("零仟", "零");
-			num_s = num_s.replaceAll("零佰", "零");
-			num_s = num_s.replaceAll("零拾", "零");
-			num_s = num_s.replaceAll("零元", "零");
-			num_s = num_s.replaceAll("零零", "零");
-			num_s = num_s.replaceAll("零零", "零");
-			num_s = num_s.replaceAll("零零", "零");
-			if (num_s.lastIndexOf("零") == num_s.length() - 1) {
-				num_s = num_s.substring(0, num_s.length() - 1);
-			}
-			return num_s + "元整";
-		} else {// 金额不是整数
-			String num_Int= getInteger(num_s);
-			num_Int = num_Int.replaceAll("零亿", "零");
-			num_Int = num_Int.replaceAll("零仟万", "零");
-			num_Int = num_Int.replaceAll("零佰万", "零");
-			num_Int = num_Int.replaceAll("零拾万", "零");
-			num_Int = num_Int.replaceAll("零万", "零");
-			num_Int = num_Int.replaceAll("零仟", "零");
-			num_Int = num_Int.replaceAll("零佰", "零");
-			num_Int = num_Int.replaceAll("零拾", "零");
-			num_Int = num_Int.replaceAll("零元", "零");
-			num_Int = num_Int.replaceAll("零零", "零");
-			num_Int = num_Int.replaceAll("零零", "零");
-			num_Int = num_Int.replaceAll("零零", "零");
-			
-			String num_Dec=getDecimal(num_s);
-			num_Dec=num_Dec.replaceAll("零角", "零");
-			num_Dec=num_Dec.replaceAll("零分", "零");
-			num_Dec=num_Dec.replaceAll("零厘", "零");
-			num_Dec=num_Dec.replaceAll("零零", "零");
-			num_Dec=num_Dec.replaceAll("零零", "零");
-			num_Dec=num_Dec.replaceAll("零零", "零");
-			if (num_Int.lastIndexOf("零") == num_Int.length() - 1) {
-				num_Int = num_Int.substring(0, num_Int.length() - 1);
-			}
-			if (num_Dec.lastIndexOf("零") == num_Dec.length() - 1) {
-				num_Dec = num_Dec.substring(0, num_Dec.length() - 1);
-			}
-			return num_Int + "元"+num_Dec;
-		} 
-		
-	}
-
-	private String getInteger(String num_s) {// 处理整数部分
-		//String num_Int = num_s;
-		String num_Int = num_s.substring(0, num_s.indexOf("."));// 获取整数部分字符串
-		StringBuffer sb = new StringBuffer();
-		for (int i = 0; i < num_Int.length(); i++) {
-			sb.append(convert_num[num_Int.charAt(i) - 48]);
-			sb.append(convert_unit1[num_Int.length() - i - 1]);
-
-		}
-
-		return sb.toString();
-	}
-
-	private String getDecimal(String num_s) {// 处理小数部分
-		String num_Dec = num_s.substring(num_s.indexOf(".") + 1);
-		StringBuffer sb = new StringBuffer();
-		for (int i = 0; i < num_Dec.length(); i++) {
-			sb.append(convert_num[num_Dec.charAt(i) - 48]);
-			sb.append(convert_unit2[i]);
-
-		}
-
-		return sb.toString();
-	}
-
-	public static void main(String[] args) {
-		// TODO 自动生成的方法存根
-		Scanner in = new Scanner(System.in);
-		System.out.println("请输入数字金额：");
-		double num = in.nextDouble();
-		if (num > 999999999) {
-			System.out.println("输入数额过大，无法转换！");
-		} else {
-			System.out.println("转换后的大写金额是：");
-			ConvertMoney cm = new ConvertMoney();
-			System.out.println(cm.Convert(num));
-		}
-
-	}
-
+    // 大写数字
+    private final static String[] STR_NUMBER = { "零", "壹", "贰", "叁", "肆", "伍",
+            "陆", "柒", "捌", "玖" };
+    private final static String[] STR_UNIT = { "", "拾", "佰", "仟", "万", "拾",
+            "佰", "仟", "亿", "拾", "佰", "仟" };// 整数单位
+    private final static String[] STR_UNIT2 = { "角", "分", "厘" };// 小数单位
+    
+    public static void main(String[] args) {
+        Scanner scan = new Scanner(System.in);// 创建扫描器
+        System.out.println("请输入一个金额");
+        // 获取金额转换后的字符串
+        String convert = convert(scan.nextDouble());
+        System.out.println(convert);// 输出转换结果
+    }
+    
+    /**
+     * 获取可数部分
+     * 
+     * @param num
+     *            金额
+     * @return 金额整数部分
+     */
+    public static String getInteger(String num) {
+        if (num.indexOf(".") != -1) { // 判断是否包含小数点
+            num = num.substring(0, num.indexOf("."));
+        }
+        num = new StringBuffer(num).reverse().toString(); // 反转字符串
+        StringBuffer temp = new StringBuffer(); // 创建一个StringBuffer对象
+        for (int i = 0; i < num.length(); i++) {// 加入单位
+            temp.append(STR_UNIT[i]);
+            temp.append(STR_NUMBER[num.charAt(i) - 48]);
+        }
+        num = temp.reverse().toString();// 反转字符串
+        num = numReplace(num, "零拾", "零"); // 替换字符串的字符
+        num = numReplace(num, "零佰", "零"); // 替换字符串的字符
+        num = numReplace(num, "零仟", "零"); // 替换字符串的字符
+        num = numReplace(num, "零万", "万"); // 替换字符串的字符
+        num = numReplace(num, "零亿", "亿"); // 替换字符串的字符
+        num = numReplace(num, "零零", "零"); // 替换字符串的字符
+        num = numReplace(num, "亿万", "亿"); // 替换字符串的字符
+        // 如果字符串以零结尾将其除去
+        if (num.lastIndexOf("零") == num.length() - 1) {
+            num = num.substring(0, num.length() - 1);
+        }
+        return num;
+    }
+    
+    /**
+     * 获取小数部分
+     * 
+     * @param num
+     *            金额
+     * @return 金额的小数部分
+     */
+    public static String getDecimal(String num) {
+        // 判断是否包含小数点
+        if (num.indexOf(".") == -1) {
+            return "";
+        }
+        num = num.substring(num.indexOf(".") + 1);
+        // 反转字符串
+        num = new StringBuffer(num).reverse().toString();
+        // 创建一个StringBuffer对象
+        StringBuffer temp = new StringBuffer();
+        // 加入单位
+        for (int i = 0; i < num.length(); i++) {
+            temp.append(STR_UNIT2[i]);
+            temp.append(STR_NUMBER[num.charAt(i) - 48]);
+        }
+        num = temp.reverse().toString(); // 替换字符串的字符
+        num = numReplace(num, "零角", "零"); // 替换字符串的字符
+        num = numReplace(num, "零分", "零"); // 替换字符串的字符
+        num = numReplace(num, "零厘", "零"); // 替换字符串的字符
+        num = numReplace(num, "零零", "零"); // 替换字符串的字符
+        // 如果字符串以零结尾将其除去
+        if (num.lastIndexOf("零") == num.length() - 1) {
+            num = num.substring(0, num.length() - 1);
+        }
+        return num;
+    }
+    
+    /**
+     * 替换字符串中内容
+     * 
+     * @param num
+     *            字符串
+     * @param oldStr
+     *            被替换内容
+     * @param newStr
+     *            新内容
+     * @return 替换后的字符串
+     */
+    public static String numReplace(String num, String oldStr, String newStr) {
+        while (true) {
+            // 判断字符串中是否包含指定字符
+            if (num.indexOf(oldStr) == -1) {
+                break;
+            }
+            // 替换字符串
+            num = num.replaceAll(oldStr, newStr);
+        }
+        // 返回替换后的字符串
+        return num;
+    }
+    
+    /**
+     * 金额转换
+     * 
+     * @param d
+     *            金额
+     * @return 转换成大写的全额
+     */
+    public static String convert(double d) {
+        // 实例化DecimalFormat对象
+        DecimalFormat df = new DecimalFormat("#0.###");
+        // 格式化double数字
+        String strNum = df.format(d);
+        // 判断是否包含小数点
+        if (strNum.indexOf(".") != -1) {
+            String num = strNum.substring(0, strNum.indexOf("."));
+            // 整数部分大于12不能转换
+            if (num.length() > 12) {
+                System.out.println("数字太大，不能完成转换！");
+                return "";
+            }
+        }
+        String point = "";// 小数点
+        if (strNum.indexOf(".") != -1) {
+            point = "元";
+        } else {
+            point = "元整";
+        }
+        // 转换结果
+        String result = getInteger(strNum) + point + getDecimal(strNum);
+        if (result.startsWith("元")) { // 判断是字符串是否已"元"结尾
+            result = result.substring(1, result.length()); // 截取字符串
+        }
+        return result; // 返回新的字符串
+    }
 }
